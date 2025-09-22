@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Internet Penetration Visualization</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 20px;
+    }
+    h2 {
+      text-align: center;
+      
+      color: #333;
+    }
+    .chart-container {
+      margin: 30px auto;
+      width: 90%;
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Global Internet Penetration & Digital Divide (2025)</h2>
+
+  <!-- Choropleth Map -->
+  <div class="chart-container">
+    <div id="choropleth" style="height:600px;"></div>
+  </div>
+
+  <!-- Bubble Chart -->
+  <div class="chart-container">
+    <div id="bubble" style="height:600px;"></div>
+  </div>
+
+  <!-- Tree Map -->
+  <div class="chart-container">
+    <div id="treemap" style="height:600px;"></div>
+  </div>
+
+  <script>
+    // Dummy dataset
+    const countries = ["India", "USA", "Nigeria", "Germany", "Brazil", "China", "South Africa", "Australia", "UK", "Japan"];
+    const penetration = [62, 92, 45, 89, 78, 74, 65, 91, 88, 93];
+    const users = [900000000, 310000000, 120000000, 80000000, 170000000, 1000000000, 40000000, 25000000, 65000000, 115000000];
+    const continent = ["Asia", "North America", "Africa", "Europe", "South America", "Asia", "Africa", "Oceania", "Europe", "Asia"];
+
+    // 1. Choropleth Map
+    const choroplethData = [{
+      type: 'choropleth',
+      locations: countries,
+      locationmode: 'country names',
+      z: penetration,
+      text: countries,
+      colorscale: 'Viridis',
+      colorbar: { title: 'Internet Penetration (%)' }
+    }];
+    Plotly.newPlot('choropleth', choroplethData, {title: "Choropleth Map - Internet Penetration"});
+
+    // 2. Bubble Chart
+    const bubbleData = [{
+      x: penetration,
+      y: users,
+      text: countries,
+      mode: 'markers',
+      marker: {
+        size: users.map(u => u / 20000000), // scale bubble size
+        color: continent.map(c => {
+          if (c === "Asia") return 'red';
+          if (c === "Europe") return 'blue';
+          if (c === "Africa") return 'green';
+          if (c === "North America") return 'orange';
+          if (c === "South America") return 'purple';
+          if (c === "Oceania") return 'pink';
+        }),
+        opacity: 0.7
+      }
+    }];
+    const bubbleLayout = {
+      title: "Bubble Chart - Users vs Penetration",
+      xaxis: { title: "Internet Penetration (%)" },
+      yaxis: { title: "Number of Users" }
+    };
+    Plotly.newPlot('bubble', bubbleData, bubbleLayout);
+
+    // 3. Tree Map
+    const treemapData = [{
+      type: "treemap",
+      labels: countries,
+      parents: continent,
+      values: users,
+      textinfo: "label+value+percent parent+percent entry",
+      marker: { colors: penetration, colorscale: "Blues" }
+    }];
+    const treemapLayout = {title: "Tree Map - Users by Continent & Country"};
+    Plotly.newPlot('treemap', treemapData, treemapLayout);
+
+  </script>
+
+</body>
+</html>
