@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Fraud Detection Dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
+      margin: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #1b263b;
+      text-shadow: 1px 1px 2px #aaa;
+    }
+    .chart-container {
+      margin: 25px auto;
+      width: 90%;
+      background: linear-gradient(145deg, #ffffff, #f1f6f9);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: transform 0.3s;
+    }
+    .chart-container:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Financial Fraud Detection Dashboard</h2>
+
+  <!-- Sankey Diagram -->
+  <div class="chart-container">
+    <div id="sankey" style="height:600px;"></div>
+  </div>
+
+  <!-- Violin Plot -->
+  <div class="chart-container">
+    <div id="violin" style="height:500px;"></div>
+  </div>
+
+  <!-- Box Plot -->
+  <div class="chart-container">
+    <div id="box" style="height:500px;"></div>
+  </div>
+
+  <script>
+    // ----------------------------
+    // 1. Sankey Diagram - Transaction Flow
+    // ----------------------------
+    const sankeyData = {
+      type: "sankey",
+      orientation: "h",
+      node: {
+        pad: 20,
+        thickness: 25,
+        line: { color: "#444", width: 1 },
+        label: ["Customer A", "Customer B", "Bank X", "Bank Y", "Receiver 1", "Receiver 2"],
+        color: ["#00b894","#0984e3","#fdcb6e","#e17055","#6c5ce7","#00cec9"]
+      },
+      link: {
+        source: [0,1,2,2,3],
+        target: [2,3,4,5,5],
+        value:  [200,150,100,50,120],
+        color: ["rgba(0,184,148,0.6)","rgba(9,132,227,0.6)","rgba(253,203,110,0.6)",
+                "rgba(225,112,85,0.6)","rgba(108,92,231,0.6)"]
+      }
+    };
+
+    Plotly.newPlot("sankey", [sankeyData], {title: {text: "Suspicious Transaction Flow (Sankey Diagram)", font: {size: 20}}});
+
+    // ----------------------------
+    // 2. Violin Plot - Fraud vs Normal Transactions
+    // ----------------------------
+    const normalTransactions = [200, 250, 180, 300, 220, 270, 260, 210];
+    const fraudTransactions = [800, 950, 700, 1200, 1100, 900, 1000];
+
+    const violinData = [
+      {
+        type: 'violin',
+        y: normalTransactions,
+        name: 'Normal',
+        box: { visible: true },
+        line: { color: '#0984e3' },
+        fillcolor: 'rgba(9,132,227,0.3)',
+        meanline: { visible: true }
+      },
+      {
+        type: 'violin',
+        y: fraudTransactions,
+        name: 'Fraud',
+        box: { visible: true },
+        line: { color: '#d63031' },
+        fillcolor: 'rgba(214,48,49,0.3)',
+        meanline: { visible: true }
+      }
+    ];
+
+    Plotly.newPlot("violin", violinData, {title: {text: "Transaction Amount Distribution (Violin Plot)", font: {size: 20}}});
+
+    // ----------------------------
+    // 3. Box Plot - Spread & Outliers
+    // ----------------------------
+    const boxData = [
+      {
+        y: normalTransactions,
+        type: 'box',
+        name: 'Normal',
+        marker: { color: '#0984e3' },
+        line: { color: '#0984e3' },
+        boxpoints: 'all'
+      },
+      {
+        y: fraudTransactions,
+        type: 'box',
+        name: 'Fraud',
+        marker: { color: '#d63031' },
+        line: { color: '#d63031' },
+        boxpoints: 'all'
+      }
+    ];
+
+    Plotly.newPlot("box", boxData, {title: {text: "Transaction Spread & Outliers (Box Plot)", font: {size: 20}}});
+
+  </script>
+
+</body>
+</html>
